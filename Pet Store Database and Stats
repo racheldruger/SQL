@@ -1,0 +1,44 @@
+--create a pet store database
+
+CREATE TABLE pet_store (id integer primary key, name text, price integer, aisle integer, color text, rating integer);
+
+INSERT INTO pet_store VALUES
+(1, 'dog food', 10, 1, 'black', 5),
+(2, 'dog treats', 3, 1, 'green', 5),
+(3, 'dog bowls', 5, 2, 'silver', 4),
+(4, 'dog crate', 50, 3, 'black', 3),
+(5, 'dog bed', 30, 4, 'blue', 5),
+(6, 'dog toy', 7, 4, 'red', 2),
+(7, 'cat food', 6, 5, 'blue', 5),
+(8, 'cat treats', 2, 5, 'yellow', 1),
+(9, 'cat bowls', 4, 6, 'pink', 3),
+(10, 'cat tower', 50, 7, 'white', 5),
+(11, 'cat bed', 25, 8, 'pink', 4),
+(12, 'cat toys', 5, 8, 'green', 4),
+(13, 'cat litter', 15, 9, 'black', 2),
+(14, 'fish tank', 10, 10, 'blue', 5),
+(15, 'fish food', 3, 10, 'white', 4);
+
+--display the database ordered by aisle
+SELECT * FROM pet_store ORDER BY aisle asc;
+
+--display the items rated 4 star or higher from highest to lowest
+SELECT * FROM pet_store WHERE rating > 3 ORDER BY rating desc;
+
+--display the items 3 star or under from highest to lowest
+SELECT * FROM pet_store WHERE rating < 4 ORDER BY rating desc;
+
+--display the total cost of items in each aisle, from most expensive aisle to least expensive aisle
+SELECT aisle, SUM(price) FROM pet_store GROUP BY aisle ORDER BY SUM(price) desc;
+
+--what is the total cost of all the items in the store?
+SELECT SUM(price) FROM pet_store;
+
+--sort the items in the store by price highest to lowest
+SELECT name FROM pet_store ORDER BY price desc;
+
+--what are the 5 cheapest items in the store?
+SELECT name FROM pet_store ORDER BY price asc LIMIT 5;
+
+--what if a customer wants only the pink and black items?
+SELECT name FROM pet_store WHERE color IN ("pink", "black");
