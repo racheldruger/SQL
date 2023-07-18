@@ -1,0 +1,141 @@
+create table FamousPeople(
+    person_id integer primary key autoincrement,
+    full_name varchar(100),
+    profession varchar(100),
+    nationality varchar(100),
+    date_of_birth date
+);
+
+create table MovieStars(
+    movie_star_id integer primary key autoincrement,
+    person_id int,
+    movie_title varchar(100),
+    is_married boolean,
+    foreign key (person_id) references famouspeople(person_id)
+    );
+    
+create table Singers(
+    singer_id integer primary key autoincrement,
+    person_id integer,
+    song_title varchar(100),
+    hometown varchar(100),
+    foreign key (person_id) references famouspeople(person_id)
+    );
+    
+create table Authors(
+    author_id integer primary key autoincrement,
+    person_id integer,
+    book_title varchar(100),
+    foreign key (person_id) references famouspeople(person_id)
+    );
+    
+create table FictionalCharacters(
+    fictional_character_id integer primary key autoincrement,
+    person_id integer,
+    related_to_character varchar(100),
+    book_title varchar(100),
+    foreign key (person_id) references famouspeople(person_id)
+    );
+    
+insert into famouspeople (full_name, profession, nationality, date_of_birth)
+values ('Tom Hanks', 'Movie star', 'United States', '1956-07-09'),
+       ('Beyoncé', 'Singer', 'United States', '1981-09-04'),
+       ('J.K. Rowling', 'Author', 'United Kingdom', '1965-07-31'),
+       ('Harry Potter', 'Fictional character', 'N/A', 'N/A'),
+       ('Leonardo DiCaprio', 'Movie star', 'United States', '1974-11-11'),
+       ('Adele', 'Singer', 'United Kingdom', '1988-05-05');
+       
+insert into moviestars (person_id, movie_title, is_married)
+values (1, 'Forrest Gump', FALSE),
+       (1, 'Cast Away', FALSE),
+       (2, 'Dreamgirls', TRUE),
+       (3, 'N/A', FALSE),
+       (4, 'Titanic', FALSE),
+       (4, 'Inception', FALSE);
+       
+insert into singers (person_id, song_title, hometown)
+values (2, 'Halo', 'Houston, Texas'),
+       (2, 'Crazy in Love', 'Houston, Texas'),
+       (6, 'Rolling in the Deep', 'London, United Kingdom');
+       
+insert into authors (person_id, book_title)
+values (3, 'Harry Potter and the Philosopher''s Stone'),
+       (3, 'Harry Potter and the Chamber of Secrets'),
+       (3, 'Harry Potter and the Prisoner of Azkaban'),
+       (5, 'The Great Gatsby'),
+       (5, 'Inception');
+       
+insert into fictionalcharacters (person_id, related_to_character, book_title)
+values (4, 'Hermione Granger', 'Harry Potter and the Philosopher''s Stone'),
+       (4, 'Ron Weasley', 'Harry Potter and the Philosopher''s Stone'),
+       (4, 'Hermione Granger', 'Harry Potter and the Chamber of Secrets'),
+       (4, 'Ron Weasley', 'Harry Potter and the Chamber of Secrets');
+
+
+--how many famous people are in the database?
+select count(*)
+from FamousPeople;
+
+--what is the nationality of tom hanks?
+select nationality
+from FamousPeople
+where full_name = 'Tom Hanks';
+
+--who was born on July 31, 1965?
+select person_id, full_name
+from FamousPeople
+where date_of_birth = '1965-07-31';
+
+--which movie stars are married?
+select a.full_name
+from FamousPeople a
+join MovieStars b on a.person_id = b.person_id
+where b.is_married = TRUE;
+
+--which movies did Tom Hanks appear in?
+select a.movie_title
+from MovieStars a
+join FamousPeople b on a.person_id = b.person_id
+where b.full_name = 'Tom Hanks';
+
+--how many movie stars are in the database?
+select count(*)
+from MovieStars;
+
+--which singers are from Houston, Texas?
+select distinct a.full_name
+from FamousPeople a
+join Singers b on a.person_id = b.person_id
+where b.hometown = 'Houston, Texas';
+
+--which singer sang the song 'Halo'?
+select a.full_name
+from FamousPeople a
+join Singers b on a.person_id = b.person_id
+where song_title = 'Halo';
+
+--how many books did JK Rowling write?
+select count(*)
+from Authors a
+join FamousPeople b on a.person_id = b.person_id
+where b.full_name = 'J.K. Rowling';
+
+--which author wrote the book Harry Potter and the Chamber of Secrets?
+select a.full_name
+from FamousPeople a
+join Authors b on a.person_id = b.person_id
+where b.book_title = 'Harry Potter and the Chamber of Secrets';
+
+--which fictional characters are related to hermione granger?
+select distinct a.full_name
+from FamousPeople a
+join FictionalCharacters b on a.person_id = b.person_id
+where b.related_to_character = 'Hermione Granger';
+
+--what famous people have appeared in movies together?
+select fp1.full_name as actor1, fp2.full_name as actor2, ms1.movie_title
+from FamousPeople fp1
+join MovieStars ms1 on fp1.person_id = ms1.person_id
+join MovieStars ms2 on ms1.movie_title = ms2.movie_title
+join FamousPeople fp2 on ms2.person_id = fp2.person_id
+where fp1.full_name < fp2.full_name;
